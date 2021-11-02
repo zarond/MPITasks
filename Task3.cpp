@@ -142,71 +142,7 @@ void send_data_method2(planetInfo* all_planets, int N) {
     }
 
 }
-/* unused
-void send_data_method3(planetInfo* all_planets, int N) {
-    int rank;
-    int world;
-    const int root = 0;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &world);
-    MPI_Request* requests = new MPI_Request[world];
-    MPI_Status* statuses = new MPI_Status[world];
-    MPI_Status status;
 
-    int2 thisPlanets = indices(N, world, rank);
-    int2 HaveInfoAbout = {rank, rank + 1};
-    int m = thisPlanets.e - thisPlanets.b;
-
-    planetInfo* planet = &all_planets[thisPlanets.b];
-
-    for (int i = 1; i < world; i*=2) {
-        int type = (rank / i) % 2;
-        bool active = (rank % i == 0);
-        int sendTo = (type == 0) ? rank + i : rank - i;
-        int receiveFrom = sendTo;
-
-        HaveInfoAbout = { rank, std::min(rank + i, world) };
-
-        if (active) {
-            if (sendTo < world) {
-                int2 sendInfoAbout1 = indices(N, world, HaveInfoAbout.b);
-                int2 sendInfoAbout2 = indices(N, world, HaveInfoAbout.e);
-                int m_1 = sendInfoAbout2.b - sendInfoAbout1.b;
-
-                int2 receiveAbout = { receiveFrom, std::min(receiveFrom + i, world) };
-                int2 receiveAboutPlanets1 = indices(N, world, receiveAbout.b);
-                int2 receiveAboutPlanets2 = indices(N, world, receiveAbout.e);
-                int m_2 = receiveAboutPlanets2.b - receiveAboutPlanets1.b;
-
-                MPI_Sendrecv(&all_planets[sendInfoAbout1.b], m_1, dt_planet, sendTo, rank, &all_planets[receiveAboutPlanets1.b], m_2, dt_planet, receiveFrom, receiveFrom, MPI_COMM_WORLD, &status);
-
-                // send data to subordinates
-                //for (int j = 1; j < i; ++j) {
-                for (int sendTo = rank + 1, count = 0; sendTo < std::min(rank + i, world); ++sendTo, ++count) {
-                    //sendTo = rank + j;
-                    MPI_Isend(&all_planets[receiveAboutPlanets1.b], m_2, dt_planet, sendTo, rank, MPI_COMM_WORLD, &requests[count]); // or blocking send
-                    //MPI_Send(&all_planets[receiveAboutPlanets1.b], m_2, dt_planet, sendTo, rank, MPI_COMM_WORLD); // or blocking send
-                }
-                int count = std::min(rank + i, world) - (rank + 1);
-                MPI_Waitall(count, requests, statuses);
-            }
-        }
-        else { // receive data as subordinate
-            receiveFrom = rank - (rank % i);
-            int typeFrom = (receiveFrom / i) % 2;
-            int index = (typeFrom == 0) ? receiveFrom + i : receiveFrom - i;
-            if (index >= world) continue;
-            int2 receiveAbout = { index,std::min(index + i,world) };
-            int2 receiveAboutPlanets1 = indices(N, world, receiveAbout.b);
-            int2 receiveAboutPlanets2 = indices(N, world, receiveAbout.e);
-            int m_1 = receiveAboutPlanets2.b - receiveAboutPlanets1.b;
-            MPI_Recv(&all_planets[receiveAboutPlanets1.b], m_1, dt_planet, receiveFrom, receiveFrom, MPI_COMM_WORLD, &status);
-        }
-    }
-    delete[] requests;
-    delete[] statuses;
-}
-*/
 void send_data_method3(planetInfo* all_planets, int N) {
     int rank;
     int world;
