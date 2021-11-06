@@ -1,4 +1,4 @@
-all: task1 task2 task3 task4 task5 task6
+all: task1 task2 task3 task4 task5 task6 task7
 
 task1: Task1.cpp
 	mpic++ -O2 -march=native Task1.cpp -o Task1
@@ -12,10 +12,13 @@ task5: Task5.cpp
 	mpic++ -O2 -march=native Task5.cpp -o Task5
 task6: Task6.cpp
 	mpic++ -O2 -march=native Task6.cpp -o Task6
+task7: Task7.cpp
+	mpic++ -O2 -march=native Task7.cpp -o Task7
 clean: 
 	rm -f Task1
 	rm -f Task2
 	rm -f Task3
 	rm -f Task4
 	rm -f Task5
-	rm -f Task6	
+	rm -f Task6
+	rm -f Task7	
