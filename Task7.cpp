@@ -203,6 +203,13 @@ int main(int argc, char** argv) {
         std::cout << "Dim: " << dim_blocks << std::endl;
     }
 
+    if (M * dim_blocks != N) {
+        if (rank == root)
+            std::cout << "Error, please choose N and number of processes such that it divides matrix to equal blocks. " << std::endl;
+        MPI_Finalize();
+        return 1;
+    }
+
     int dims[2] = { dim_blocks,dim_blocks };
     int dims_p[2] = { 1,1 };
     MPI_Cart_create(MPI_COMM_WORLD, 2, dims, dims_p, 0, &decart);
